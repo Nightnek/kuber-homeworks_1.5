@@ -30,7 +30,13 @@
   - `containers-data-exchange.yaml`
 - Скриншоты:
   - описание пода с контейнерами (`kubectl describe pods data-exchange`)
+ 
+<img width="818" height="1171" alt="image" src="https://github.com/user-attachments/assets/34ae1d14-5339-45a3-b7d6-7b1b6bde2b4e" />
+
   - вывод команды чтения файла (`tail -f <имя общего файла>`)
+
+<img width="802" height="78" alt="image" src="https://github.com/user-attachments/assets/3248cb47-c3ec-4323-a29a-e1a132d1464f" />
+
 
 ------
 
