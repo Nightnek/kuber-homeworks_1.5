@@ -84,7 +84,20 @@
 
 1. Создать Deployment приложения, состоящего из контейнеров busybox и multitool, использующего созданный ранее PVC.
 2. Создать SC и PVC для подключения папки на локальной ноде, которая будет использована в поде.
+
+*Создаем SC и PVC c подами:*
+<img width="757" height="310" alt="image" src="https://github.com/user-attachments/assets/111aace5-31df-41c7-b77b-380d74e953e0" />
+*Однако, мы видим что PV не создаются. Не создаются они, согласно описанию с https://kubernetes.io/docs/concepts/storage/storage-classes/  для локальных SC*
+<img width="590" height="552" alt="image" src="https://github.com/user-attachments/assets/97e43614-fcd6-48a4-9086-1b14a7a9d3b9" />
+*В целях обучения, я создал PV отдельно, привязав его к SC. Манифест `sc-pvc.yaml`*
+<img width="788" height="245" alt="image" src="https://github.com/user-attachments/assets/3ea72082-611c-4af7-88a5-5f730e2da2c7" />
+
+
+
 3. Продемонстрировать, что контейнер multitool может читать данные из файла в смонтированной директории, в который busybox записывает данные каждые 5 секунд.
+
+<img width="782" height="258" alt="image" src="https://github.com/user-attachments/assets/da223e60-57c7-4eed-accd-91937c1cd113" />
+
 
 ### Что сдать на проверку
 - Манифесты:
