@@ -1,0 +1,53 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: scvol
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc1
+spec:
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: scvol
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-exchange-sc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scapp
+  template:
+    metadata:
+      labels:
+        app: scapp
+    spec:
+      containers:
+      - name: busybox1
+        image: busybox
+        command: [ "/bin/sh", "-c" ]
+        args: [ "while true; do echo $(date) >> /data/out/data; sleep 5; done;" ]
+        volumeMounts:
+        - name: data
+          mountPath: /data/out
+      - name: busybox2
+        image: busybox
+        command: [ "/bin/sh", "-c" ]
+        args: [ "tail -f /data/in/data" ]
+        volumeMounts:
+        - name: data
+          mountPath: /data/in
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: pvc1

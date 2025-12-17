@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-exchange
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: volex
+  template:
+    metadata:
+      labels:
+        app: volex
+    spec:
+      containers:
+      - name: busybox1
+        image: busybox
+        command: [ "/bin/sh", "-c" ]
+        args: [ "echo $(date) > /out/text; sleep 3600" ]
+        volumeMounts:
+        - name: vol
+          mountPath: /out
+      - name: busybox2
+        image: busybox
+        command: [ "/bin/sh", "-c" ]
+        args: [ "tail -f /in/text" ]
+        volumeMounts:
+        - name: vol
+          mountPath: /in
+      volumes:
+      - name: vol
+        emptyDir: {}
