@@ -1,0 +1,61 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvstore
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /tmp/kubepv
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc1
+spec:
+  volumeName: pvstore
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-exchange-pvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pvapp
+  template:
+    metadata:
+      labels:
+        app: pvapp
+    spec:
+      containers:
+      - name: busybox-out
+        image: busybox
+        command: [ "/bin/sh", "-c" ]
+        args: [ "echo $(date) > /data/out/data; sleep 3600" ]
+        volumeMounts:
+        - name: data
+          mountPath: /data/out
+      - name: busybox-in
+        image: busybox
+        command: [ "/bin/sh", "-c" ]
+        args: [ "tail -f /data/in/data" ]
+        volumeMounts:
+        - name: data
+          mountPath: /data/in
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: pvc1
